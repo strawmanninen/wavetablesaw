@@ -2,8 +2,9 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright (c) 2021 Straw Manninen <strawmanninen@outlook.com>
+#
 
-
+import sys
 import argparse
 
 
@@ -14,7 +15,7 @@ def get_arguments() -> argparse.Namespace:
         argparse.Namespace: parsed arguments
     """
 
-    parser = argparse.ArgumentParser(description="Change wavetable file periods.")
+    parser = argparse.ArgumentParser(description="Manipulate wavetable files")
 
     parser.add_argument(
         "files",
@@ -82,4 +83,4 @@ def get_arguments() -> argparse.Namespace:
         required=False,
     )
 
-    return parser.parse_args()
+    return parser.parse_args(args=sys.argv[1:])
