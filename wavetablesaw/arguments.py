@@ -15,15 +15,9 @@ def get_arguments() -> argparse.Namespace:
         argparse.Namespace: parsed arguments
     """
 
-    parser = argparse.ArgumentParser(description="Manipulate wavetable files")
+    # the main parser
 
-    parser.add_argument(
-        "files",
-        metavar="file",
-        type=str,
-        nargs="+",
-        help="file(s) to process",
-    )
+    parser = argparse.ArgumentParser(description="Manipulate wavetable files", epilog="run with commandname -h for help with a particular command")
 
     parser.add_argument(
         "-v",
@@ -35,7 +29,27 @@ def get_arguments() -> argparse.Namespace:
         help="verbose operation",
     )
 
-    parser.add_argument(
+    # parsers for the individual commands
+
+    cmdparsers = parser.add_subparsers(title="command", description="the operation to run", help="command",
+                                       dest="command", required=True)
+
+    convert_parser = cmdparsers.add_parser('convert', help="convert wavetable size")
+    shuffle_parser = cmdparsers.add_parser('shuffle', help="shuffle wavetable")
+    extract_parser = cmdparsers.add_parser('extract', help="extract individual slices of a wavetable")
+    reverse_parser = cmdparsers.add_parser('reverse', help="reverse wavetablse")
+
+    # arguments for conversion
+
+    convert_parser.add_argument(
+        "files",
+        metavar="file",
+        type=str,
+        nargs="+",
+        help="file(s) to process",
+    )
+
+    convert_parser.add_argument(
         "-d",
         "--double",
         dest="interpolate",
@@ -45,7 +59,7 @@ def get_arguments() -> argparse.Namespace:
         help="use doubling method (default: interpolate)",
     )
 
-    parser.add_argument(
+    convert_parser.add_argument(
         "-p",
         "--pattern",
         metavar="pattern",
@@ -57,7 +71,7 @@ def get_arguments() -> argparse.Namespace:
         required=False,
     )
 
-    parser.add_argument(
+    convert_parser.add_argument(
         "-i",
         "--insize",
         metavar="insize",
@@ -70,7 +84,7 @@ def get_arguments() -> argparse.Namespace:
         required=False,
     )
 
-    parser.add_argument(
+    convert_parser.add_argument(
         "-o",
         "--outsize",
         metavar="outsize",
@@ -83,4 +97,127 @@ def get_arguments() -> argparse.Namespace:
         required=False,
     )
 
-    return parser.parse_args(args=sys.argv[1:])
+    # arguments for shuffling
+
+    shuffle_parser.add_argument(
+        "files",
+        metavar="file",
+        type=str,
+        nargs="+",
+        help="file(s) to process",
+    )
+
+    shuffle_parser.add_argument(
+        "-p",
+        "--pattern",
+        metavar="pattern",
+        type=str,
+        const="pattern",
+        default="",
+        nargs="?",
+        help="pattern to append to output filename (default: 'shuffled')",
+        required=False,
+    )
+
+    shuffle_parser.add_argument(
+        "-i",
+        "--insize",
+        metavar="insize",
+        type=int,
+        const="insize",
+        default=1024,
+        choices=[512, 1024, 2048],
+        nargs="?",
+        help="input wavetable period size (default: 1024)",
+        required=False,
+    )
+
+    shuffle_parser.add_argument(
+        "-o",
+        "--outsize",
+        metavar="outsize",
+        type=int,
+        const="outsize",
+        default=2048,
+        choices=[512, 1024, 2048],
+        nargs="?",
+        help="output wavetable period size (default: 2048)",
+        required=False,
+    )
+
+    # arguments for extraction
+
+    extract_parser.add_argument(
+        "files",
+        metavar="file",
+        type=str,
+        nargs="+",
+        help="file(s) to process",
+    )
+
+    extract_parser.add_argument(
+        "-p",
+        "--pattern",
+        metavar="pattern",
+        type=str,
+        const="pattern",
+        default="",
+        nargs="?",
+        help="pattern to append to output filename (default: 'extract'+number of slice)",
+        required=False,
+    )
+
+    extract_parser.add_argument(
+        "-i",
+        "--insize",
+        metavar="insize",
+        type=int,
+        const="insize",
+        default=1024,
+        choices=[512, 1024, 2048],
+        nargs="?",
+        help="input wavetable period size (default: 1024)",
+        required=False,
+    )
+
+    # arguments for reversing
+
+    reverse_parser.add_argument(
+        "files",
+        metavar="file",
+        type=str,
+        nargs="+",
+        help="file(s) to process",
+    )
+
+    reverse_parser.add_argument(
+        "-p",
+        "--pattern",
+        metavar="pattern",
+        type=str,
+        const="pattern",
+        default="",
+        nargs="?",
+        help="pattern to append to output filename (default: 'reverse')",
+        required=False,
+    )
+
+    reverse_parser.add_argument(
+        "-i",
+        "--insize",
+        metavar="insize",
+        type=int,
+        const="insize",
+        default=1024,
+        choices=[512, 1024, 2048],
+        nargs="?",
+        help="input wavetable period size (default: 1024)",
+        required=False,
+    )
+
+    if len(sys.argv) == 1:
+        parser.print_usage()
+        print(f"run '{sys.argv[0]} -h' for detailed usage")
+        sys.exit(1)
+
+    return parser.parse_args()
