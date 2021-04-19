@@ -8,4 +8,12 @@ def reverse_wavetable(file,
                       outfile,
                       insize,
                       verbose=False):
+    """
+
+    Args:
+        file:
+        outfile:
+        insize:
+        verbose:
+    """
     pass

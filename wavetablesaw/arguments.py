@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#
 # -*- coding: utf-8 -*-
 #
 # Copyright (c) 2021 Straw Manninen <strawmanninen@outlook.com>
@@ -17,7 +17,8 @@ def get_arguments() -> argparse.Namespace:
 
     # the main parser
 
-    parser = argparse.ArgumentParser(description="Manipulate wavetable files", epilog="run with commandname -h for help with a particular command")
+    parser = argparse.ArgumentParser(description="Manipulate wavetable files",
+                                     epilog="run with commandname -h for help with a particular command")
 
     parser.add_argument(
         "-v",
@@ -27,6 +28,28 @@ def get_arguments() -> argparse.Namespace:
         const=True,
         default=False,
         help="verbose operation",
+    )
+
+    parser.add_argument(
+        "-r",
+        "--recursive",
+        dest="recursive",
+        action="store_const",
+        const=True,
+        default=False,
+        help="recurse input directories",
+    )
+
+    parser.add_argument(
+        "-out",
+        "--outdir",
+        metavar="outdir",
+        type=str,
+        const="outdir",
+        default="",
+        nargs="?",
+        help="output files to specified directory",
+        required=False,
     )
 
     # parsers for the individual commands

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#
 # -*- coding: utf-8 -*-
 #
 # Copyright (c) 2021 Straw Manninen <strawmanninen@outlook.com>
@@ -9,6 +9,16 @@ import soundfile
 
 
 def double_wavetable(data, insize, interpolate):
+    """
+
+    Args:
+        data:
+        insize:
+        interpolate:
+
+    Returns:
+
+    """
     datashape = np.shape(data)
     outdata = np.empty((datashape[0] * 2, datashape[1]))
 
@@ -29,6 +39,14 @@ def double_wavetable(data, insize, interpolate):
 
 
 def halve_wavetable(data):
+    """
+
+    Args:
+        data:
+
+    Returns:
+
+    """
     datashape = np.shape(data)
     outdata = np.empty((datashape[0] // 2, datashape[1]))
 
@@ -70,7 +88,7 @@ def convert_wavetable(
         if ratio < 1:
             outdata = halve_wavetable(data)
 
-        # TODO: add file format conversion, currently we use same as input
+        # currently we use same output format as input
 
         with soundfile.SoundFile(
                 f"{outfile}",
