@@ -15,6 +15,7 @@ See https://github.com/strawmanninen/wavetablesaw for more details
 
 """
 import soundfile
+import os.path
 
 from arguments import get_arguments
 from audioutils import wave_to_mono
@@ -57,6 +58,14 @@ if __name__ == "__main__":
     numfiles = 0
 
     for file in files:
+
+        # create directories to output file if they don't exist
+        dirname = os.path.dirname(file['out'])
+        if not os.path.isdir(dirname):
+            if args.verbose:
+                print(f"'{dirname}' doesn't exist, creating...")
+            os.makedirs(dirname)
+
         with soundfile.SoundFile(file['in'], "rb") as wavefile:
             wavedata = wavefile.read()
             outdata = None
@@ -69,16 +78,17 @@ if __name__ == "__main__":
                     print(f"Converting '{file['in']}' into '{file['out']}'... ", end="")
                 if args.verbose:
                     print(f"using method: {'interpolate' if args.interpolate else 'double'}.")
-
                 outdata = convert_wavetable(wavedata, args.insize, args.outsize, args.interpolate, verbose=args.verbose)
+
             elif args.command == 'shuffle':
                 if args.verbose:
                     print(f"Shuffling '{file}' into '{file['out']}'... ", end="")
                 outdata = shuffle_wavetable(wavedata, args.insize, verbose=args.verbose)
 
             elif args.command == 'extract':
+                # extract is a special case, as it returns an array of data chunks
                 if args.verbose:
-                    print(f"Shuffling '{file}' into '{file['out']}'... ", end="")
+                    print(f"Extracting '{file}'... ", end="")
                 outdata = extract_wavetable(wavedata, args.insize, verbose=args.verbose)
 
             elif args.command == 'reverse':
