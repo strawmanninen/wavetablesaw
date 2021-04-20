@@ -12,7 +12,7 @@ Handles wave table period size conversion
 import numpy as np
 
 
-def double_wavetable(data, insize, interpolate):
+def double_wavetable(data: np.array, insize: int, interpolate: bool):
     """
 
     Args:
@@ -62,7 +62,7 @@ def halve_wavetable(data) -> np.array:
     return outdata
 
 
-def convert_wavetable(data: np.array, insize: int, outsize: int, interpolate: bool, verbose=False) -> np.array:
+def convert_wavetable(data: np.array, insize: int, outsize: int, interpolate: bool) -> np.array:
     """Handle the wavetable conversion
 
     Args:
@@ -70,7 +70,6 @@ def convert_wavetable(data: np.array, insize: int, outsize: int, interpolate: bo
         insize (int): input period size
         outsize (int): output period size
         interpolate (bool): interpolate output (True), or use sample doubling
-        verbose (bool): display output if True
 
     Returns:
         (np.array): the converted wavetable

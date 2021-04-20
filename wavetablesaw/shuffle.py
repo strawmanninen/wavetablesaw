@@ -9,14 +9,14 @@
 Randomize cycles in a wavetable
 """
 
+import numpy as np
 
-def shuffle_wavetable(data, insize, verbose=False):
+
+def shuffle_wavetable(data: np.array, insize: int):
     """
 
     Args:
-        file:
-        outfile:
+        data:
         insize:
-        verbose:
     """
     pass

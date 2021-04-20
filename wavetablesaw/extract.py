@@ -9,14 +9,17 @@
 Extract individual cycles from a wavetable
 """
 
+import numpy as np
 
-def extract_wavetable(data, insize, verbose=False):
+
+def extract_wavetable(data: np.array, insize: int) -> [np.array]:
     """
 
     Args:
-        file:
-        outfile:
-        insize:
-        verbose:
+        data (np.array): input data
+        insize (int): wavetable period size
+
+    Returns:
+        ([np.array]): an array of extracted waveforms
     """
     pass

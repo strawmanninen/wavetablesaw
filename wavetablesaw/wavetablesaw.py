@@ -78,23 +78,23 @@ if __name__ == "__main__":
                     print(f"Converting '{file['in']}' into '{file['out']}'... ", end="")
                 if args.verbose:
                     print(f"using method: {'interpolate' if args.interpolate else 'double'}.")
-                outdata = convert_wavetable(wavedata, args.insize, args.outsize, args.interpolate, verbose=args.verbose)
+                outdata = convert_wavetable(wavedata, args.insize, args.outsize, args.interpolate)
 
             elif args.command == 'shuffle':
                 if args.verbose:
                     print(f"Shuffling '{file}' into '{file['out']}'... ", end="")
-                outdata = shuffle_wavetable(wavedata, args.insize, verbose=args.verbose)
+                outdata = shuffle_wavetable(wavedata, args.insize)
 
             elif args.command == 'extract':
                 # extract is a special case, as it returns an array of data chunks
                 if args.verbose:
                     print(f"Extracting '{file}'... ", end="")
-                outdata = extract_wavetable(wavedata, args.insize, verbose=args.verbose)
+                outdata = extract_wavetable(wavedata, args.insize)
 
             elif args.command == 'reverse':
                 if args.verbose:
                     print(f"Reversing '{file}' into '{file['out']}'... ", end="")
-                outdata = reverse_wavetable(wavedata, args.insize, verbose=args.verbose)
+                outdata = reverse_wavetable(wavedata, args.insize)
 
             with soundfile.SoundFile(
                     f"{file['out']}",

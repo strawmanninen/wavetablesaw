@@ -9,14 +9,14 @@
 Reverse a wavetable
 """
 
+import numpy as np
 
-def reverse_wavetable(data, insize, verbose=False):
+
+def reverse_wavetable(data, insize) -> np.array:
     """
 
     Args:
-        file:
-        outfile:
-        insize:
-        verbose:
+        data (np.array):
+        insize (int):
     """
     pass
