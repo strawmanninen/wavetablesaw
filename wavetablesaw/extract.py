@@ -10,10 +10,7 @@ Extract individual cycles from a wavetable
 """
 
 
-def extract_wavetable(file,
-                      outfile,
-                      insize,
-                      verbose=False):
+def extract_wavetable(data, insize, verbose=False):
     """
 
     Args:

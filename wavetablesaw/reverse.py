@@ -10,10 +10,7 @@ Reverse a wavetable
 """
 
 
-def reverse_wavetable(file,
-                      outfile,
-                      insize,
-                      verbose=False):
+def reverse_wavetable(data, insize, verbose=False):
     """
 
     Args:

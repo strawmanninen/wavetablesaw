@@ -10,10 +10,7 @@ Randomize cycles in a wavetable
 """
 
 
-def shuffle_wavetable(file,
-                      outfile,
-                      insize,
-                      verbose=False):
+def shuffle_wavetable(data, insize, verbose=False):
     """
 
     Args:

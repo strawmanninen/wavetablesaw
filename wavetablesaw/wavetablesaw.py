@@ -14,8 +14,10 @@ This is the main entry point when running from command line
 See https://github.com/strawmanninen/wavetablesaw for more details
 
 """
+import soundfile
 
 from arguments import get_arguments
+from audioutils import wave_to_mono
 from fileutils import get_files
 from convert import convert_wavetable
 from shuffle import shuffle_wavetable
@@ -48,58 +50,53 @@ def get_pattern(command: str) -> str:
 
 if __name__ == "__main__":
 
+    # get_arguments will bail out if parameters are incorrect / missing
     args = get_arguments()
+
     files = get_files(args.files, pattern=get_pattern(args.command), outdir=args.outdir, recursive=args.recursive)
+    numfiles = 0
 
-    if args.command == 'convert':
-        if args.verbose:
-            print(f"Using method: {'interpolate' if args.interpolate else 'double'}.")
+    for file in files:
+        with soundfile.SoundFile(file['in'], "rb") as wavefile:
+            wavedata = wavefile.read()
+            outdata = None
 
-        for file in files:
-            if args.verbose:
-                print(f"Converting '{file['in']}' into '{file['out']}'... ", end="")
+            if wavefile.channels > 1:
+                wavedata = wave_to_mono(wavedata)
 
-            convert_wavetable(
-                file['in'],
-                file['out'],
-                args.insize,
-                args.outsize,
-                args.interpolate,
-                verbose=args.verbose,
-            )
-    elif args.command == 'shuffle':
-        for file in files:
-            if args.verbose:
-                print(f"Shuffling '{file}' into '{file['out']}'... ", end="")
+            if args.command == 'convert':
+                if args.verbose:
+                    print(f"Converting '{file['in']}' into '{file['out']}'... ", end="")
+                if args.verbose:
+                    print(f"using method: {'interpolate' if args.interpolate else 'double'}.")
 
-            shuffle_wavetable(
-                file['in'],
-                file['out'],
-                args.insize,
-                verbose=args.verbose,
-            )
-    elif args.command == 'extract':
-        for file in files:
-            if args.verbose:
-                print(f"Shuffling '{file}' into '{file['out']}'... ", end="")
+                outdata = convert_wavetable(wavedata, args.insize, args.outsize, args.interpolate, verbose=args.verbose)
+            elif args.command == 'shuffle':
+                if args.verbose:
+                    print(f"Shuffling '{file}' into '{file['out']}'... ", end="")
+                outdata = shuffle_wavetable(wavedata, args.insize, verbose=args.verbose)
 
-            extract_wavetable(
-                file['in'],
-                file['out'],
-                args.insize,
-                verbose=args.verbose,
-            )
-    elif args.command == 'reverse':
-        for file in files:
-            if args.verbose:
-                print(f"Reversing '{file}' into '{file['out']}'... ", end="")
+            elif args.command == 'extract':
+                if args.verbose:
+                    print(f"Shuffling '{file}' into '{file['out']}'... ", end="")
+                outdata = extract_wavetable(wavedata, args.insize, verbose=args.verbose)
 
-            reverse_wavetable(
-                file['in'],
-                file['out'],
-                args.insize,
-                verbose=args.verbose,
-            )
+            elif args.command == 'reverse':
+                if args.verbose:
+                    print(f"Reversing '{file}' into '{file['out']}'... ", end="")
+                outdata = reverse_wavetable(wavedata, args.insize, verbose=args.verbose)
+
+            with soundfile.SoundFile(
+                    f"{file['out']}",
+                    "wb",
+                    samplerate=wavefile.samplerate,
+                    channels=1,
+                    subtype=wavefile.subtype,
+                    format=wavefile.format,
+                    endian=wavefile.endian,
+            ) as outwave:
+                outwave.write(outdata)
+                numfiles += 1
 
     if args.verbose:
-        print("Done.")
+        print(f"Done, processed {numfiles} files.")
