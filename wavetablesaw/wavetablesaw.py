@@ -89,8 +89,25 @@ if __name__ == "__main__":
                 # extract is a special case, as it returns an array of data chunks
                 if args.verbose:
                     print(f"Extracting '{file}'... ", end="")
-                outdata = extract_wavetable(wavedata, args.insize)
 
+                extracted = extract_wavetable(wavedata, args.insize)
+                wavename = os.path.splitext(file['out'])
+                for i, x in enumerate(extracted):
+                    # wavename = os.path.splitext(path)
+
+                    with soundfile.SoundFile(
+                            f"{wavename[0]}-{i:03}{wavename[1]}",
+                            "wb",
+                            samplerate=wavefile.samplerate,
+                            channels=1,
+                            subtype=wavefile.subtype,
+                            format=wavefile.format,
+                            endian=wavefile.endian,
+                    ) as outwave:
+                        print(f"{wavename} {i}")
+                        outwave.write(x)
+                numfiles += 1
+                continue
             elif args.command == 'reverse':
                 if args.verbose:
                     print(f"Reversing '{file}' into '{file['out']}'... ", end="")

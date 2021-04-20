@@ -31,3 +31,20 @@ def wave_to_mono(data: np.array) -> np.array:
 
     return monodata
 
+
+def copy_block(indata: np.array, outdata: np.array, inblock: int, outblock: int, size: int):
+    """
+
+    Args:
+        indata:
+        outdata:
+        inblock:
+        outblock:
+        size:
+
+    """
+
+    for x in range(size):
+        outdata[outblock * size + x] = indata[inblock * size + x]
+
+    return
