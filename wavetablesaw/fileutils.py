@@ -5,7 +5,9 @@
 # Copyright (c) 2021 Straw Manninen <strawmanninen@outlook.com>
 # Licensed under MIT license, see the LICENSE file for details
 #
-
+"""
+Helpers for parsing input file names, handles globbing (mainly for Windows) and recursive inputs
+"""
 
 from pathlib import Path
 import os

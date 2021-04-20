@@ -5,6 +5,9 @@
 # Copyright (c) 2021 Straw Manninen <strawmanninen@outlook.com>
 # Licensed under MIT license, see the LICENSE file for details
 #
+"""
+Randomize cycles in a wavetable
+"""
 
 
 def shuffle_wavetable(file,

@@ -5,6 +5,9 @@
 # Copyright (c) 2021 Straw Manninen <strawmanninen@outlook.com>
 # Licensed under MIT license, see the LICENSE file for details
 #
+"""
+Handles wave table period size conversion
+"""
 
 import numpy as np
 import soundfile
@@ -16,13 +19,15 @@ def double_wavetable(data, insize, interpolate):
     Args:
         data:
         insize:
-        interpolate:
+        interpolate
 
     Returns:
 
     """
+
     datashape = np.shape(data)
-    outdata = np.empty((datashape[0] * 2, datashape[1]))
+    # outdata = np.empty((datashape[0] * 2, datashape[1]))
+    outdata = np.empty((datashape[0] * 2, ))
 
     for i in range(datashape[0]):
         outdata[i * 2] = data[i]
@@ -30,8 +35,7 @@ def double_wavetable(data, insize, interpolate):
         if interpolate:
             # linear interpolation
             outdata[i * 2 + 1] = (
-                (data[i][0] + data[(i + 1) % insize][0]) / 2.0,
-                (data[i][1] + data[(i + 1) % insize][1]) / 2.0,
+                    (data[i] + data[(i + 1) % insize]) / 2.0
             )
         else:
             # double / truncate
@@ -40,17 +44,18 @@ def double_wavetable(data, insize, interpolate):
     return outdata
 
 
-def halve_wavetable(data):
+def halve_wavetable(data) -> np.array:
     """
 
     Args:
-        data:
+        data (np.array): input wave data to process
 
     Returns:
+        (np.array) halved wavetable data
 
     """
     datashape = np.shape(data)
-    outdata = np.empty((datashape[0] // 2, datashape[1]))
+    outdata = np.empty((datashape[0] // 2, ))
 
     for i in range(datashape[0] // 2):
         outdata[i] = data[i * 2]
@@ -74,16 +79,26 @@ def convert_wavetable(
 
     with soundfile.SoundFile(infile, "rb") as wave:
 
+        data = wave.read()
+        frames = np.shape(data)[0]
+
         if verbose:
             print(
-                f"Samplerate: {wave.samplerate} Channels:{wave.channels} Format: {wave.format}/{wave.subtype}"
+                f"Samplerate: {wave.samplerate} Channels:{wave.channels}" 
+                "Format: {wave.format}/{wave.subtype}, Frames: {frames}"
             )
 
-        data = wave.read(always_2d=True)
+        # convert to mono
+        if wave.channels > 1:
+            shape = frames,
+            monodata = np.zeros(shape, dtype=data.dtype)
+            for i in range(frames):
+                monodata[i] = data[i][0]
+
+            data = monodata
 
         ratio = outsize / insize
-
-        outdata = ""
+        outdata = None
 
         if ratio > 1:
             outdata = double_wavetable(data, insize, interpolate)
@@ -96,7 +111,7 @@ def convert_wavetable(
                 f"{outfile}",
                 "wb",
                 samplerate=wave.samplerate,
-                channels=wave.channels,
+                channels=1,
                 subtype=wave.subtype,
                 format=wave.format,
                 endian=wave.endian,
